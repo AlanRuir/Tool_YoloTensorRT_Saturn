@@ -1,4 +1,16 @@
-#include "kernel_function.cuh"
+#include "kernel_function.h"
+
+bool __check_cuda_runtime(cudaError_t code, const char* op, const char* file, int line)
+{
+    if (code != cudaSuccess)
+    {
+        const char* err_name    = cudaGetErrorName(code);
+        const char* err_message = cudaGetErrorString(code);
+        printf("runtime error %s:%d  %s failed. \n  code = %s, message = %s\n", file, line, op, err_name, err_message);
+        return false;
+    }
+    return true;
+}
 
 // 缩放图像核函数
 __global__ void resizeKernel(int batch_size, unsigned char* src, int src_width, int src_height,
@@ -103,7 +115,7 @@ __global__ void normKernel(int batch_size, float* src, int src_width, int src_he
 }
 
 void normDevice(int batch_size, float* src, int src_width, int src_height,
-                float* dst, int dst_width, int dst_height, const YoloInitParam& param,
+                float* dst, int dst_width, int dst_height, YoloInitParam& param,
                 cudaStream_t stream)
 {
     int total             = batch_size * src_width * src_height * 3;

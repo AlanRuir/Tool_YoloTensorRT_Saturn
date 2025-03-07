@@ -11,6 +11,8 @@
 
 #define CHECK(op) __check_cuda_runtime((op), #op, __FILE__, __LINE__)
 
+bool __check_cuda_runtime(cudaError_t code, const char* op, const char* file, int line);
+
 // 缩放图像
 void resizeDevice(int batch_size, unsigned char* src, int src_width, int src_height,
                   float* dst, int dst_width, int dst_height, float padding_value,
@@ -22,7 +24,7 @@ void bgr2RgbDevice(int batch_size, float* src, int src_width, int src_height,
 
 // 归一化
 void normDevice(int batch_size, float* src, int src_width, int src_height,
-                float* dst, int dst_width, int dst_height, const YoloInitParam& param,
+                float* dst, int dst_width, int dst_height, YoloInitParam& param,
                 cudaStream_t stream = 0);
 
 // HWC 转 CHW
